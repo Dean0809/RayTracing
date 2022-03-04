@@ -1,11 +1,33 @@
+#include "colour.h"
+#include "vec3.h"
+#include "ray.h"
 #include <iostream>
 
-const
+colour ray_colour(const ray& r)
+{
+	vec3 unitDir = r.direction().normalize();
+	auto t = 0.5f * (unitDir[1] + 1.0f);
+	return (1.0f - t) * colour(1.0f, 1.0f, 1.0f) + t * colour(0.5f, 0.7f, 1.0f);
+}
+
+
 int main()
 {
 	// Image
-	const int image_width  = 256;
-	const int image_height = 256;
+	const auto aspectRatio = 16.0f / 9.0f;
+	const int image_width  = 400;
+	const int image_height = static_cast<int>(image_width / aspectRatio);
+
+	// Camera
+	auto viewportHeight = 2.0f;
+	auto viewportWidth = aspectRatio * viewportHeight;
+	auto focal_length = 1.0f;
+
+	auto orgin = point3(0.f, 0.f, 0.f);
+	auto horizontal = vec3(viewportWidth, 0.f, 0.f);
+	auto vertical = vec3(0.f, viewportHeight, 0.f);
+	auto lowerLeftCorner = orgin - horizontal / 2 - vertical / 2 - vec3(0, 0, focal_length);
+
 
 	// Render
 
@@ -13,17 +35,15 @@ int main()
 
 	for (int col = image_height - 1; col >= 0; --col)
 	{
-		for (int row = 0; row < image_height; ++row)
+		std::cerr << "\rScanlines remaining:" << col << ' ' << std::flush;
+		for (int row = 0; row < image_width; ++row)
 		{
-			auto r = double(row) / (image_width - 1);
-			auto g = double(col) / (image_height - 1);
-			auto b = 0.25;
-
-			int rowR = static_cast<int>(255.999 * r);
-			int rowG = static_cast<int>(255.999 * g);
-			int rowB = static_cast<int>(255.999 * b);
-
-			std::cout << rowR << ' ' << rowG << ' ' << rowB << '\n';
+			auto u = float(row) / (image_width - 1);
+			auto v = float(col) / (image_height - 1);
+			ray r(orgin, lowerLeftCorner + u * horizontal + v * vertical - orgin);
+			colour pixel_colour = ray_colour(r);
+			write_colour(std::cout, pixel_colour);
 		}
 	}
+	std::cerr << "\nDone\n";
 }
