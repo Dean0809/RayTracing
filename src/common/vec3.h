@@ -36,6 +36,12 @@ public:
         return result;
     }
 
+    // subtraction operator
+    vec3 operator -() const
+    {
+        vec3 result(-x, -y, -z);
+        return result;
+    }
     // multiplication operator
     vec3 operator *(float factor) const
     {

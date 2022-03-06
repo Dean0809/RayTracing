@@ -13,17 +13,23 @@ project(RatTracing
 set(CMAKE_CXX_STANDARD 11)
 
 set(COMMON_ALL
+	"src/common/rtweekend.h"
 	"src/common/vec3.h"
 	"src/common/ray.h"
+	"src/common/camera.h"
 )
 
 set(SOURCE_ONE_WEEKEND
 	${COMMON_ALL}
+	"src/InOneWeekend/sphere.h"
+	"src/InOneWeekend/hittable_list.h"
+	"src/InOneWeekend/hittable.h"
 	"src/InOneWeekend/main.cpp"
 )
 
 
 # executables
 add_executable (inOneWeekend ${SOURCE_ONE_WEEKEND})
-
-include_directories("src/common")
+include_directories(
+	"src/common" 
+	)
