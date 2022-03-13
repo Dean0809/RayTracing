@@ -36,12 +36,12 @@ int main()
 			colour pixel_colour(0.0f, 0.0f, 0.0f);
 			for (int i = 0; i < samples_per_pixel; ++i)
 			{
-				auto u = float(row) / (image_width - 1);
-				auto v = float(col) / (image_height - 1);
+				auto u = float(row + random_float()) / (image_width - 1);
+				auto v = float(col + random_float()) / (image_height - 1);
 				ray r = cam.get_ray(u, v);
-				pixel_colour += ray_colour(r, world);
-				write_colour(std::cout, pixel_colour, samples_per_pixel);
+				pixel_colour = pixel_colour + ray_colour(r, world);
 			}
+			write_colour(std::cout, pixel_colour, samples_per_pixel);
 		}
 	}
 	std::cerr << "\nDone\n";
